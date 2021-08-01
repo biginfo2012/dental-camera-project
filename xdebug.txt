@@ -1,0 +1,15 @@
+[26192] Log opened at 2021-08-01 01:03:04
+[26192] I: Connecting to configured address/port: 127.0.0.1:9000.
+[26192] E: Time-out connecting to client (Waited: 200 ms). :-(
+[26192] Log closed at 2021-08-01 01:03:04
+
+[5512] Log opened at 2021-08-01 01:05:30
+[5512] I: Connecting to configured address/port: 127.0.0.1:9000.
+[5512] E: Time-out connecting to client (Waited: 200 ms). :-(
+[5512] Log closed at 2021-08-01 01:05:30
+
+[14280] Log opened at 2021-08-01 01:05:33
+[14280] I: Connecting to configured address/port: 127.0.0.1:9000.
+[14280] E: Time-out connecting to client (Waited: 200 ms). :-(
+[14280] Log closed at 2021-08-01 01:05:33
+
