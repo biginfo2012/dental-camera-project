@@ -16,3 +16,17 @@ bin-release/
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
+.env
+.env
+.env
+.env
+.env
+.idea/misc.xml
+.idea/modules.xml
+.idea/dental-camera-project.iml
+.idea/php.xml
+.idea/phpunit.xml
+.idea/vcs.xml
+.idea/workspace.xml
+xdebug.txt
+xdebug.txt
