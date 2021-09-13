@@ -13,14 +13,8 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
+    'page_not_found' => '해당한 페이지를 찾을수 없습니다.',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'login' => 'Login',
-    'email' => 'Email',
-    'pw' => 'Password',
-    'register' => 'register',
-    'name' => 'Name',
-    'already_register' => 'Already registered?'
 
 ];

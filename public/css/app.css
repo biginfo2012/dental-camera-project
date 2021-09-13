@@ -526,14 +526,14 @@ samp {
  *    CSS Remedy, with `svg` added as well.
  *
  *    https://github.com/mozdevs/cssremedy/issues/14
- * 
+ *
  * 2. Add `vertical-align: middle` to align replaced elements more
  *    sensibly by default when overriding `display` by adding a
  *    utility like `inline`.
  *
  *    This can trigger a poorly considered linting error in some
  *    tools but is included by design.
- * 
+ *
  *    https://github.com/jensimmons/cssremedy/issues/14#issuecomment-634934210
  */
 
@@ -6748,10 +6748,6 @@ select {
 
 .min-h-full {
   min-height: 100%;
-}
-
-.min-h-screen {
-  min-height: 100vh;
 }
 
 .w-0 {
@@ -38115,10 +38111,6 @@ select {
     min-height: 100%;
   }
 
-  .sm\:min-h-screen {
-    min-height: 100vh;
-  }
-
   .sm\:w-0 {
     width: 0px;
   }
@@ -69400,10 +69392,6 @@ select {
 
   .md\:min-h-full {
     min-height: 100%;
-  }
-
-  .md\:min-h-screen {
-    min-height: 100vh;
   }
 
   .md\:w-0 {
@@ -100689,10 +100677,6 @@ select {
     min-height: 100%;
   }
 
-  .lg\:min-h-screen {
-    min-height: 100vh;
-  }
-
   .lg\:w-0 {
     width: 0px;
   }
@@ -131976,10 +131960,6 @@ select {
     min-height: 100%;
   }
 
-  .xl\:min-h-screen {
-    min-height: 100vh;
-  }
-
   .xl\:w-0 {
     width: 0px;
   }
@@ -163261,10 +163241,6 @@ select {
 
   .\32xl\:min-h-full {
     min-height: 100%;
-  }
-
-  .\32xl\:min-h-screen {
-    min-height: 100vh;
   }
 
   .\32xl\:w-0 {

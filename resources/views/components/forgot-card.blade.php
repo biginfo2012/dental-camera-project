@@ -4,7 +4,7 @@
     </div>
 
     <div class="bg-lightest border-1px p-25 sm:max-w-md sm:rounded-lg">
-        <h4 class="text-theme-colored text-uppercase m-0">{{ __('auth.login') }}</h4>
+        <h4 class="text-theme-colored text-uppercase m-0">{{ __('passwords.forgot_password') }}</h4>
         <div class="line-bottom mb-30"></div>
         {{ $slot }}
     </div>

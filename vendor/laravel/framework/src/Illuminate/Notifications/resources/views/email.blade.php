@@ -44,7 +44,7 @@
 {{ $salutation }}
 @else
 @lang('Regards'),<br>
-{{ config('app.name') }}
+{{ __('app_info.app_name') }}
 @endif
 
 {{-- Subcopy --}}

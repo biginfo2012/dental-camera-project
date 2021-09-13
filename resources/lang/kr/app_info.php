@@ -13,14 +13,8 @@ return [
     |
     */
 
-    'failed' => 'These credentials do not match our records.',
+    'app_name' => '구강갤러리',
     'password' => 'The provided password is incorrect.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-    'login' => 'Login',
-    'email' => 'Email',
-    'pw' => 'Password',
-    'register' => 'register',
-    'name' => 'Name',
-    'already_register' => 'Already registered?'
-
+    'home' => '홈'
 ];
