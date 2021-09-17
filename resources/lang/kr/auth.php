@@ -21,6 +21,7 @@ return [
     'pw' => '암호',
     'register' => '등록',
     'name' => '이름',
-    'already_register' => '이미 등록하신 계정이 있습니까?'
+    'already_register' => '이미 등록하신 계정이 있습니까?',
+    'modify' => '변경'
 
 ];

@@ -21,6 +21,7 @@ return [
     'pw' => 'Password',
     'register' => 'register',
     'name' => 'Name',
-    'already_register' => 'Already registered?'
+    'already_register' => 'Already registered?',
+    'modify' => 'Modify'
 
 ];
