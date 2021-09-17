@@ -36,6 +36,7 @@ class ComposerStaticInitbe2d682a7e193dcb9aaa61e862ed023d
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'b6b991a57620e2fb6b2f66f03fe9ddc2' => __DIR__ . '/..' . '/symfony/string/Resources/functions.php',
         'ed962a97bd972bc82007176b647d4e36' => __DIR__ . '/..' . '/facade/ignition/src/helpers.php',
+        '1aff2f8abd60e952b4bdd52d4f05a132' => __DIR__ . '/../..' . '/app/helper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -522,6 +523,7 @@ class ComposerStaticInitbe2d682a7e193dcb9aaa61e862ed023d
         'App\\Http\\Controllers\\Auth\\RegisteredUserController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisteredUserController.php',
         'App\\Http\\Controllers\\Auth\\VerifyEmailController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/VerifyEmailController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
@@ -543,6 +545,7 @@ class ComposerStaticInitbe2d682a7e193dcb9aaa61e862ed023d
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\View\\Components\\AppLayout' => __DIR__ . '/../..' . '/app/View/Components/AppLayout.php',
         'App\\View\\Components\\GuestLayout' => __DIR__ . '/../..' . '/app/View/Components/GuestLayout.php',
+        'App\\View\\Components\\UserLayout' => __DIR__ . '/../..' . '/app/View/Components/UserLayout.php',
         'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Cors.php',
         'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/CorsService.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
@@ -952,6 +955,7 @@ class ComposerStaticInitbe2d682a7e193dcb9aaa61e862ed023d
         'Facade\\Ignition\\Support\\LaravelVersion' => __DIR__ . '/..' . '/facade/ignition/src/Support/LaravelVersion.php',
         'Facade\\Ignition\\Support\\Packagist\\Package' => __DIR__ . '/..' . '/facade/ignition/src/Support/Packagist/Package.php',
         'Facade\\Ignition\\Support\\Packagist\\Packagist' => __DIR__ . '/..' . '/facade/ignition/src/Support/Packagist/Packagist.php',
+        'Facade\\Ignition\\Support\\SentReports' => __DIR__ . '/..' . '/facade/ignition/src/Support/SentReports.php',
         'Facade\\Ignition\\Support\\StringComparator' => __DIR__ . '/..' . '/facade/ignition/src/Support/StringComparator.php',
         'Facade\\Ignition\\Tabs\\Tab' => __DIR__ . '/..' . '/facade/ignition/src/Tabs/Tab.php',
         'Facade\\Ignition\\Views\\Compilers\\BladeSourceMapCompiler' => __DIR__ . '/..' . '/facade/ignition/src/Views/Compilers/BladeSourceMapCompiler.php',
