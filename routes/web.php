@@ -26,21 +26,14 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 //user
-Route::group(['middleware'=>'auth'], function (){
+Route::group(['middleware' => 'auth'], function (){
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
     Route::post('/modify', [UserController::class, 'modify'])->name('modify');
     Route::get('/date-list', [UserController::class, 'dateList'])->name('date-list');
     Route::post('/date-table', [UserController::class, 'dateTable'])->name('date-table');
     Route::get('/date-detail/{id}', [UserController::class, 'dateDetail'])->name('date-detail');
     Route::post('/record-delete/{id}', [UserController::class, 'recordDelete'])->name('record-delete');
+    Route::post('/img-delete/{id}', [UserController::class, 'imgDelete'])->name('img-delete');
     Route::get('/part-list', [UserController::class, 'partList'])->name('part-list');
     Route::post('/part-table', [UserController::class, 'partTable'])->name('part-table');
-});
-Route::prefix('v1')->group(function(){
-    Route::post('login', [ApiController::class, 'login'])->name('api.login');
-    Route::group(['middleware'=>'auth'], function (){
-        Route::post('logout', [ApiController::class, 'logout'])->name('api.logout');
-        Route::post('save-record', [ApiController::class, 'saveRecord'])->name('api.save');
-
-    });
 });

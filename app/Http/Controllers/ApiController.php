@@ -3,10 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Common\ApiResponseData;
+use App\Models\Comment;
+use App\Models\Image;
+use App\Models\Record;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Mockery\Exception;
 
 class ApiController extends Controller
 {
@@ -17,26 +22,35 @@ class ApiController extends Controller
 
         $validator = Validator::make($input,
             [
-                'email' => ['required', 'exists:t_staff,email'],
+                'email' => ['required', 'exists:users,email'],
                 'password' => ['required', 'string'],
             ]);
 
         $responseData = new ApiResponseData($request);
 
-        if ($validator->fails()) {
-            $responseData->status = self::ERROR;
-            $errors = $validator->errors();
-            if ($errors->has('email')) {
-                $responseData->message =  self::ERR_INVALID_USER_EMAIL;
+        try {
+            if ($validator->fails()) {
+                $responseData->status = self::ERROR;
+                $errors = $validator->errors();
+                if ($errors->has('email')) {
+                    $responseData->message =  self::ERR_INVALID_USER_EMAIL;
+                }
+                else {
+                    $responseData->message =  self::ERR_INVALID_PASSWORD;
+                }
+                return response()->json($responseData);
             }
-            else {
-                $responseData->message =  self::ERR_INVALID_PASSWORD;
-            }
-            return response()->json($responseData);
+        }
+        catch (Exception $e){
+            Log::info('$e : ' . $e->getMessage());
         }
 
-        if(Auth::attempt(['email' => $input['email'], 'password' => $input['password'], 'is_active' => 1])){
+
+        if(Auth::attempt(['email' => $input['email'], 'password' => $input['password']])){
             $user = Auth::user();
+//            $success = array(
+//                'user_id' =>  Auth::user()->id,
+//            );
             $success = array(
                 'token' =>  $user->createToken(config('app.name'))-> accessToken,
             );
@@ -63,21 +77,13 @@ class ApiController extends Controller
     public function saveRecord(Request $request)
     {
         $params = $request->all();
+
         //TODO doc change
-        if(isset($params["shift_list"])){
-            $params["shift_list"] = json_decode($params["shift_list"], true);
-        }
+
         $validator = Validator::make($params,
             [
-                'shift_list' => ['required', 'array'],
-                'shift_list.*.shift_id' => ['required', 'exists:t_shift,id'],
-                'shift_list.*.arrive_time' => ['nullable', 'required_with:shift_list.*.leave_time,shift_list.*.break_s_time,shift_list.*.night_break_s_time', 'integer', 'min:0', 'max:2400'],
-                'shift_list.*.leave_time' => ['nullable', 'integer', 'gte:shift_list.*.arrive_time', 'min:0', 'max:2400'],
-                'shift_list.*.break_s_time' => ['nullable', 'integer', 'gte:shift_list.*.arrive_time', 'min:0', 'max:2400'],
-                'shift_list.*.break_time' => ['nullable', 'required_with:shift_list.*.break_time', 'integer', 'min:0', 'max:2400'],
-                'shift_list.*.night_break_s_time' => ['nullable', 'integer', 'gte:shift_list.*.arrive_time', 'min:0', 'max:2400'],
-                'shift_list.*.night_break_time' => ['nullable', 'required_with:shift_list.*.night_break_s_time', 'integer', 'min:0', 'max:2400'],
-                'shift_list.*.alt_date' => ['nullable', 'date_format:Y-m-d'],
+                'save_type' => ['required', 'integer', 'min:1', 'max:2'],
+                'symptom_type' => ['required', 'integer', 'min:1', 'max:6'],
             ]);
 
         $responseData = new ApiResponseData($request);
@@ -85,8 +91,8 @@ class ApiController extends Controller
         if ($validator->fails()) {
             $responseData->status = self::ERROR;
             $errors = $validator->errors();
-            if ($errors->has('shift_list')) {
-                $responseData->message =  self::ERR_INVALID_SHIFT_LIST;
+            if ($errors->has('user_id')) {
+                $responseData->message =  self::ERR_INVALID_USER_ID;
             }
             else{
                 try {
@@ -102,7 +108,42 @@ class ApiController extends Controller
             return response()->json($responseData);
         }
 
-        $responseData->message = __("common.response.success");
+        $saveType = $request->get('save_type');
+        $symptomType = $request->get('symptom_type');
+        $title = $request->get('title');
+        $content = $request->get('content');
+        $data = [
+            'user_id' => Auth::user()->id,
+            'save_type' => $saveType,
+            'symptom_type' => $symptomType
+        ];
+        $record_id = Record::create($data)->id;
+        if(isset($title) || isset($content)){
+            Comment::create([
+                'title' => $title,
+                'content' => $content,
+                'record_id' => $record_id
+            ]);
+        }
+
+        for($i = 1; $i < 6; $i++) {
+            for($j = 1; $j < 9; $j++){
+                if($request->hasFile('attach_'.$i.'_'.$j)) {
+                    $key = 'attach_'.$i.'_'.$j;
+                    $photo = $request[$key]->store('image','public');
+                    $data = [
+                        'record_id' => $record_id,
+                        'part_type' => $i,
+                        'pos_id' => $j,
+                        'img_url'=>$photo?asset('storage')."/".$photo:null,
+                    ];
+                    Image::create($data);
+                }
+            }
+
+        }
+
+        $responseData->message = "";
         $responseData->status = self::SUCCESS;
         return response()->json($responseData);
     }

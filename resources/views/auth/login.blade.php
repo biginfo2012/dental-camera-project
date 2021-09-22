@@ -30,8 +30,7 @@
                     <x-label for="password" :value="__('auth.pw')" />
 
                     <x-input id="password" class="block mt-1 w-full"
-                             type="password"
-                             name="password"
+                             type="password" name="password"
                              required autocomplete="current-password" aria-required="true"/>
                 </div>
 
@@ -52,10 +51,19 @@
                     </a>
                 @endif
 
-                <x-button class="ml-3">
-                    {{ __('auth.login') }}
-                </x-button>
             </div>
+                <div class="flex items-center justify-end mt-4 text-center mt-20">
+
+                    <x-button class="ml-3">
+                        {{ __('auth.login') }}
+                    </x-button>
+                </div>
         </form>
     </x-auth-card>
+    <script>
+        $(document).ready(function(){
+            $("#appointment_form").validate({
+            });
+        });
+    </script>
 </x-guest-layout>

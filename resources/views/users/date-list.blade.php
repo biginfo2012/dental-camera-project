@@ -2,8 +2,8 @@
     <x-slot name="">
     </x-slot>
     <!-- Section: inner-header -->
-    <section class="inner-header divider parallax layer-overlay overlay-white-8" data-bg-img="images/bg/bg6.jpg">
-        <div class="container pt-60 pb-60">
+    <section class="inner-header divider parallax layer-overlay overlay-white-8" data-bg-img="">
+        <div class="container pt-20 pb-10">
             <!-- Section Content -->
             <div class="section-content">
                 <div class="row">
@@ -15,29 +15,37 @@
         </div>
     </section>
     <section>
-        <div class="container">
-            <form id="search_form">
+        <div class="container pt-0">
+            <form id="search_form" class="" style="margin-top: -30px">
                 @csrf
                 <div class="row mt-40">
                     <div class="col-md-6">
-                        <h4>날자범위선택</h4>
+                        <h4>날짜범위선택</h4>
                         <!-- Datepicker Daterange Markup -->
+{{--                        <div class="form-group mb-10">--}}
+{{--                            <input class="form-control required date-picker" type="text" placeholder="" aria-required="true">--}}
+{{--                        </div>--}}
+{{--                        <div class="form-group mb-10">--}}
+{{--                            <input class="form-control required date-picker" type="text" placeholder="" aria-required="true">--}}
+{{--                        </div>--}}
                         <div id="example-daterange">
                             <div class="input-daterange input-group" id="datepicker">
-                                <input type="text" class="input-sm form-control" name="start" required/>
+                                <input class="form-control date-picker" name="start" type="text" placeholder="">
                                 <span class="input-group-addon">~</span>
-                                <input type="text" class="input-sm form-control" name="end" required/>
+                                <input class="form-control date-picker" name="end" type="text" placeholder="">
                             </div>
                             <!-- Datepicker Daterange Script -->
                             <script>
-                                $('#example-daterange .input-daterange').datepicker({});
+                                $('.date-picker').datepicker({});
                             </script>
                         </div>
+
                     </div>
                     <div class="col-md-2">
                         <h4>분류선택</h4>
                         <div class="form-group">
                             <select class="form-control" name="symptom_type">
+                                <option value="">전체</option>
                                 <option value="1">구강질환</option>
                                 <option value="2">심미개선</option>
                                 <option value="3">골격/배열</option>
@@ -56,7 +64,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-offset-8 col-md-4 text-right">
-                        <button class="member_delete btn btn-success ml-auto" id="search_btn">검색</button>
+                        <button class="btn btn-success ml-auto" id="search_btn">검색</button>
                     </div>
                 </div>
             </form>
@@ -65,29 +73,47 @@
                 <div class="col-md-12">
                     <hr>
                     <h4 class="title">날짜별 항목일람</h4>
-                    <div data-example-id="bordered-table" class="bs-example">
-                        <table class="table table-bordered" id="dateTable">
-                            <thead>
-                            <tr>
-                                <th width="10%" class="text-center align-middle"></th>
-                                <th width="20%" class="text-center align-middle">날자</th>
-                                <th width="20%" class="text-center align-middle">분류</th>
-                                <th width="25%" class="text-center align-middle">메모</th>
-                                <th width="25%" class="text-center align-middle">조작</th>
-                            </tr>
-                            </thead>
-                            <tbody id="date-table">
+                    <div data-example-id="bordered-table" class="bs-example" id="date-table">
 
-
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+    <!-- Modal -->
+    <div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document" style="margin-top: 35vh">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">삭제</h4>
+                </div>
+                <div class="modal-body">
+                    데이터를 삭제하시겠습니까?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                    <button type="button" id="del_btn" class="btn btn-danger btn-flat">확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style type="text/css">
+        .pa{
+            text-align: center;
+            margin-top: -20px;
+        }
+        .bottom{
+            position: absolute;
+            top: 45px;
+            right: 15px;
+        }
+
+    </style>
     <script type="text/javascript">
         let HOST_URL = '<?= url('')?>';
+        let table, id;
         $(document).ready(function () {
             let token = $('[name=_token]').val();
             console.log(token)
@@ -98,16 +124,48 @@
                 dataType: 'json',
                 complete: function(r){
                     $('#date-table').html(r.responseText);
-                    $('#dateTable').dataTable({
-                        searching: false
+                    table = $('#dateTable').dataTable({
+                        "dom": '<"top"i>rt<"bottom"fl><"pa"p><"clear">',
+                        "searching": false,
+                        "columnDefs": [
+                            { "width": "5%" },
+                            { "width": "20%" },
+                            { "width": "25%" },
+                            { "width": "25%" },
+                            { "width": "25%" },
+                        ],
+                        "language": {
+                            "decimal":        "",
+                            "emptyTable":     "현시가능한 자료가 없습니다.",
+                            "info":           "_TOTAL_개의 자료중에_START_~_END_가 현시됩니다.",
+                            "infoEmpty":      "0~0의0을 표시",
+                            "infoFiltered":   "(filtered from _MAX_ total entries)",
+                            "infoPostFix":    "",
+                            "thousands":      ",",
+                            "lengthMenu":     " _MENU_ ",
+                            "loadingRecords": "로드중...",
+                            "processing":     "처리중...",
+                            "search":         "검색:",
+                            "zeroRecords":    "일치하는 검색자료가 없습니다.",
+                            "paginate": {
+                                "first":      "처음에",
+                                "last":       "마지막",
+                                "next":       "다음",
+                                "previous":   "이전"
+                            },
+                            "aria": {
+                                "sortAscending":  ": ",
+                                "sortDescending": ": "
+                            }
+                        }
                     });
                 },
                 success: function(response){
 
                 },
             });
-            $(document).on('click', '.member_delete', function () {
-                let id = $(this).data('id');
+            $('#del_btn').click(function () {
+                $('#delModal').modal('hide');
                 $.ajax({
                     url: HOST_URL + "/record-delete/" + id,
                     type: 'post',
@@ -123,13 +181,18 @@
                     },
                 });
             })
+            $(document).on('click', '.member_delete', function () {
+                event.preventDefault();
+                id = $(this).data('id');
+                $('#delModal').modal('show');
+            })
         })
 
         $('#search_btn').click(function(){
             event.preventDefault();
             if($('#search_form').valid()){
                 var paramObj = new FormData($("#search_form")[0]);
-
+                //$('#date-table').empty();
                 $.ajax({
                     url: HOST_URL + "/date-table",
                     type: 'post',
@@ -138,7 +201,41 @@
                     processData: false,
                     success: function(response){
                         $('#date-table').html(response);
-                        $('#dateTable').dataTable();
+                        $('#dateTable').dataTable({
+                            "dom": '<"top"i>rt<"bottom"fl><"pa"p><"clear">',
+                            "searching": false,
+                            "columnDefs": [
+                                { "width": "5%" },
+                                { "width": "20%" },
+                                { "width": "25%" },
+                                { "width": "25%" },
+                                { "width": "25%" },
+                            ],
+                            "language": {
+                                "decimal":        "",
+                                "emptyTable":     "현시가능한 자료가 없습니다.",
+                                "info":           "_TOTAL_개의 자료중에_START_~_END_가 현시됩니다.",
+                                "infoEmpty":      "0~0의0을 표시",
+                                "infoFiltered":   "(filtered from _MAX_ total entries)",
+                                "infoPostFix":    "",
+                                "thousands":      ",",
+                                "lengthMenu":     " _MENU_ ",
+                                "loadingRecords": "로드중...",
+                                "processing":     "처리중...",
+                                "search":         "검색:",
+                                "zeroRecords":    "일치하는 검색자료가 없습니다.",
+                                "paginate": {
+                                    "first":      "처음에",
+                                    "last":       "마지막",
+                                    "next":       "다음",
+                                    "previous":   "이전"
+                                },
+                                "aria": {
+                                    "sortAscending":  ": ",
+                                    "sortDescending": ": "
+                                }
+                            }
+                        });
                         // if(response.status === true){
                         //     console.log(response);
                         //     toastr.success("변경성공");

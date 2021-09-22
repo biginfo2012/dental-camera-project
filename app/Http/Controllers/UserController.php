@@ -8,6 +8,7 @@ use App\Models\Record;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -24,17 +25,37 @@ class UserController extends Controller
             $photo = $request->file->store('image','public');
         }
         if($photo == null) {
-            $data = [
-                'name' => $request->name,
-                'email' => $request->email,
-            ];
+            if(isset($request->password)){
+                $data = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => Hash::make($request->password)
+                ];
+            }
+            else{
+                $data = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                ];
+            }
         }
         else{
-            $data = [
-                'name' => $request->name,
-                'email' => $request->email,
-                'avatar'=>$photo?asset('storage')."/".$photo:null,
-            ];
+            if(isset($request->password)){
+                $data = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'avatar'=>$photo?asset('storage')."/".$photo:null,
+                    'password' => Hash::make($request->password)
+                ];
+            }
+            else{
+                $data = [
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'avatar'=>$photo?asset('storage')."/".$photo:null,
+                ];
+            }
+
         }
         User::where('id', $request->id)->update($data);
         return response()->json([
@@ -57,26 +78,52 @@ class UserController extends Controller
             'status' => true
         ]);
     }
+    public function imgDelete($id){
+        Image::where('id', $id)->delete();
+        return response()->json([
+            'status' => true
+        ]);
+    }
     public function dateTable(Request $request){
-        if(!isset($request->symptom_type)){
-            $data = Record::with('comment')->where('user_id', Auth::user()->id)->where('save_type', 2)->get()->toArray();
-            return view('users.date-table', ['data' => $data]);
-        }
 
-        $start_date = date('Y-m-d H:i:s', strtotime($request->start));
-        $end_date = date('Y-m-d H:i:s', strtotime($request->end));
+        if(!isset($request->start)){
+            $start_date = '1900-01-01 00:00:00';
+        }
+        else{
+            $start_date = date('Y-m-d H:i:s', strtotime($request->start));
+        }
+        if(!isset($request->end)){
+            $end_date = '2200-01-01 00:00:00';
+        }
+        else{
+            $end_date = date('Y-m-d H:i:s', strtotime($request->end));
+        }
         $symptom_type = $request->symptom_type;
         $memo = $request->memo;
         if(isset($memo)){
-            $data = Record::with('comment')->whereHas('comment',function ($query) use ($memo){
-                $query->where('title','like', '%' . $memo . '%');})->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
-                ->where('user_id', Auth::user()->id)->where('symptom_type', $symptom_type)->where('save_type', 2)->get()->toArray();
+            if(isset($symptom_type)){
+                $data = Record::with('comment')->whereHas('comment',function ($query) use ($memo){
+                    $query->where('title','like', '%' . $memo . '%');})->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                    ->where('user_id', Auth::user()->id)->where('symptom_type', $symptom_type)->get()->toArray();
+            }
+            else{
+                $data = Record::with('comment')->whereHas('comment',function ($query) use ($memo){
+                    $query->where('title','like', '%' . $memo . '%');})->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                    ->where('user_id', Auth::user()->id)->get()->toArray();
+            }
         }
         else{
-            $data = Record::with('comment')->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
-                ->where('user_id', Auth::user()->id)->where('symptom_type', $symptom_type)->where('save_type', 2)->get()->toArray();
+            if(isset($symptom_type)){
+                $data = Record::with('comment')->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                    ->where('user_id', Auth::user()->id)->where('symptom_type', $symptom_type)->get()->toArray();
+            }
+            else{
+                $data = Record::with('comment')->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                    ->where('user_id', Auth::user()->id)->get()->toArray();
+            }
         }
 
+        //print_r($data);
         return view('users.date-table', ['data' => $data]);
     }
     public function partList(){
@@ -84,12 +131,7 @@ class UserController extends Controller
     }
     public function partTable(Request $request){
         $user_id = Auth::user()->id;
-        if(!isset($request->symptom_type)){
-            $data = Image::with('record')->whereHas('record',function ($query) use ($user_id){
-                $query->where('save_type', 2)->where('user_id', $user_id);})
-                ->get()->toArray();
-            return view('users.part-table', ['data' => $data]);
-        }
+
         if(isset($request->start)){
             $start_date = date('Y-m-d H:i:s', strtotime($request->start));
         }
@@ -103,24 +145,78 @@ class UserController extends Controller
             $end_date = '2250-01-01 00:00:00';
         }
 
-        $symptom_type = (int)($request->symptom_type);
-        $part_type = (int)($request->part_type);
-        $pos_id = (int)($request->pos_id);
+        $symptom_type = $request->symptom_type;
+        $part_type = $request->part_type;
+        $pos_id = $request->pos_id;
+        if(isset($symptom_type)){
+            if(isset($part_type)){
+                if($part_type === 1){
+                    $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                        $query->where('symptom_type', $symptom_type)->where('user_id', $user_id);})
+                        ->where('part_type', 1)
+                        ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                        ->get()->toArray();
+                }
+                else{
+                    if(isset($pos_id)){
+                        $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                            $query->where('symptom_type', $symptom_type)->where('user_id', $user_id);})
+                            ->where('part_type', $part_type)->where('pos_id', $pos_id)
+                            ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                            ->get()->toArray();
+                    }
+                    else{
+                        $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                            $query->where('symptom_type', $symptom_type)->where('user_id', $user_id);})
+                            ->where('part_type', $part_type)
+                            ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                            ->get()->toArray();
+                    }
 
-        if($part_type === 1){
-            $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
-                $query->where('symptom_type', $symptom_type)->where('save_type', 2)->where('user_id', $user_id);})
-                ->where('part_type', 1)
-                ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
-                ->get()->toArray();
+                }
+            }
+            else{
+                $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                    $query->where('symptom_type', $symptom_type)->where('user_id', $user_id);})
+                    ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                    ->get()->toArray();
+            }
         }
         else{
-            $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
-                $query->where('symptom_type', $symptom_type)->where('save_type', 2)->where('user_id', $user_id);})
-                ->where('part_type', $part_type)->where('pos_id', $pos_id)
-                ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
-                ->get()->toArray();
+            if(isset($part_type)){
+                if($part_type === 1){
+                    $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                        $query->where('user_id', $user_id);})
+                        ->where('part_type', 1)
+                        ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                        ->get()->toArray();
+                }
+                else{
+                    if(isset($pos_id)){
+                        $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                            $query->where('user_id', $user_id);})
+                            ->where('part_type', $part_type)->where('pos_id', $pos_id)
+                            ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                            ->get()->toArray();
+                    }
+                    else{
+                        $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                            $query->where('user_id', $user_id);})
+                            ->where('part_type', $part_type)
+                            ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                            ->get()->toArray();
+                    }
+
+                }
+            }
+            else{
+                $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                    $query->where('user_id', $user_id);})
+                    ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
+                    ->get()->toArray();
+            }
         }
+
         return view('users.part-table', ['data' => $data]);
     }
 }

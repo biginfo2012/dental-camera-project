@@ -21,7 +21,7 @@ return [
     'forgot_password' => '암호를 잊으셨습니까?',
     'confirm_pw' => '암호확인',
     'forgot_sentence' => '등록한 이메일주소를 입력하시고 아래의 버튼을 클릭하시면 암호를 다시 설정할수 있습니다.',
-    'reset_link' => '암호재설정링크전송',
+    'reset_link' => '암호재설정',
     'reset_pw' => '암호재설정'
 
 ];

@@ -58,14 +58,14 @@
                                     <img id="img_avatar" style="width: 35px !important; height: 35px; border-radius: 50%;" src="{{ (isset(\Illuminate\Support\Facades\Auth::user()->avatar) ? \Illuminate\Support\Facades\Auth::user()->avatar : asset('images/blog/author.jpg'))}}" class="avatar brround avatar-xl"/>
                                     <label style="margin-left: 15px;">{{\Illuminate\Support\Facades\Auth::user()->name}}</label>
                                 </a>
-                                <ul class="dropdown" style="right: auto; display: none;">
-                                    <li>
-                                        <a class="" href="{{route('profile')}}">프로필보기</a>
+                                <ul class="dropdown" style="right: auto; display: none; min-width: 120px">
+                                    <li style="min-width: 120px;">
+                                        <a class="" href="{{route('profile')}}"><i class="fa fa-user"></i> 프로필보기</a>
                                     </li>
-                                    <li>
+                                    <li style="min-width: 120px;">
                                         <a onclick="event.preventDefault();
                                            $(this).parent().find('form').submit();">
-                                            로그아웃
+                                            <i class="fa fa-sign-out"></i> 로그아웃
                                         </a>
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
@@ -79,16 +79,19 @@
 
                     @else
                         <div class="pull-right sm-pull-left mb-sm-15">
-                            <a class="btn btn-colored btn-flat btn-theme-colored mt-15 mt-sm-10 pt-10 pb-10" href="{{ route('register') }}">{{ __('auth.register') }}</a>
+                            <a class="btn btn-dark btn-theme-colored ml-3 mt-15 mb-15" href="{{ route('register') }}" style="width: 88px;">{{ __('auth.register') }}</a>
                         </div>
                         <div class="pull-right sm-pull-left mb-sm-15 mr-15">
-                            <a class="btn btn-colored btn-flat btn-theme-colored mt-15 mt-sm-10 pt-10 pb-10" href="{{ route('login') }}">{{ __('auth.login') }}</a>
+                            <a class="btn btn-dark btn-theme-colored ml-3 mt-15 mb-15" href="{{ route('login') }}">{{ __('auth.login') }}</a>
                         </div>
                     @endif
 
                     <ul class="menuzord-menu">
-                        <li class="{{\Request::route()->getName() === 'home' ? 'active' : ''}}"><a href="{{ route('home') }}">Home</a>
-                        </li>
+                        @if(\Request::route()->getName() !== 'home')
+                            <li class="{{\Request::route()->getName() === 'home' ? 'active' : ''}}"><a href="{{ route('home') }}">홈페이지</a>
+                            </li>
+                        @endif
+
                         @if(\Illuminate\Support\Facades\Auth::guard()->check())
                             <li class="{{\Request::route()->getName() === 'date-list' ? 'active' : ''}}" style="margin-left: 5px;"><a href="{{ route('date-list') }}">날짜별보기</a>
                             </li>

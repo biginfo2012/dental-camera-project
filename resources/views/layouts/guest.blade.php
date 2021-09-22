@@ -47,6 +47,7 @@
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <!-- JS | jquery plugin collection for this theme -->
         <script src="{{ asset('js/jquery-plugin-collection.js') }}"></script>
+        <script src="{{ asset('js/jquery.validate.js') }}"></script>
 
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -87,5 +88,26 @@
 {{--            {{ $slot }}--}}
 {{--        </div>--}}
     <script src="{{ asset('js/custom.js') }}"></script>
+    <script type="text/javascript">
+        jQuery.extend(jQuery.validator.messages, {
+            required: "필수입력필드입니다.",
+            remote: "이 필드를 고쳐주십시오.",
+            email: "정확한 이메일을 입력해주십시오.",
+            url: "정확한 URL을 입력해주십시오.",
+            date: "정확한 날짜를 입력해주십시오.",
+            dateISO: "정확한 날짜(ISO)를 입력해주십시오.",
+            number: "수자를 입력해주십시오.",
+            digits: "숫자만 입력해주십시오.",
+            creditcard: "올바른 신용카드 번호를 입력하십시오.",
+            equalTo: "동일한 값을 다시 입력하십시오.",
+            accept: "올바른 확장자를 가진 값을 입력하십시오.",
+            maxlength: jQuery.validator.format("{0}자 이내로 입력하십시오."),
+            minlength: jQuery.validator.format("{0}자 이상을 입력하십시오."),
+            rangelength: jQuery.validator.format("{0}자에서 {1}자 사이의 값을 입력하십시오."),
+            range: jQuery.validator.format("{0}에서 {1} 사이의 값을 입력하십시오."),
+            max: jQuery.validator.format("{0}보다 작거나 같은 값을 입력하십시오."),
+            min: jQuery.validator.format("{0}보다 크거나 같은 값을 입력하십시오.")
+        });
+    </script>
     </body>
 </html>

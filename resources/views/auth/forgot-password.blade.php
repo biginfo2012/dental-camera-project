@@ -16,7 +16,7 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('password.email') }}">
+        <form id="modify" method="POST" action="{{ route('password.email') }}">
             @csrf
 
             <!-- Email Address -->
@@ -29,11 +29,17 @@
 
             </div>
 
-            <div class="flex items-center justify-end mt-4">
+            <div class="flex items-center justify-end mt-10 text-center">
                 <x-button>
                     {{ __('passwords.reset_link') }}
                 </x-button>
             </div>
         </form>
     </x-forgot-card>
+    <script>
+        $(document).ready(function(){
+            $("#modify").validate({
+            });
+        });
+    </script>
 </x-guest-layout>
