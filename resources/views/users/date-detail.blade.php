@@ -34,12 +34,12 @@
                 <div class="col-md-12">
                     <h4>메모</h4>
                     <div class="form-group">
-                        <p class="">메모제목: {{$record['comment']['title']}}</p>
+                        <p class="">메모제목: {{isset($record['comment']) ? $record['comment']['title'] : ''}}</p>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <p class="">메모내용: {{$record['comment']['content']}}</p>
+                        <p class="">메모내용: {{isset($record['comment']) ? $record['comment']['content']: ''}}</p>
                     </div>
                 </div>
             </div>

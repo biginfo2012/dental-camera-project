@@ -21,8 +21,15 @@ class UserController extends Controller
     }
     public function modify(Request $request){
         $photo = null;
+        $path = null;
         if($request->hasFile('file')){
-            $photo = $request->file->store('image','public');
+            $file = $request->file('file');
+            $extension = $file->getClientOriginalExtension(); // you can also use file name
+            $photo = time().'.'.$extension;
+            $path = public_path().'/image';
+            $uplaod = $file->move($path,$photo);
+            $path = '/public/image/' . $photo;
+            //$photo = $request->file->store('image','public');
         }
         if($photo == null) {
             if(isset($request->password)){
@@ -44,7 +51,8 @@ class UserController extends Controller
                 $data = [
                     'name' => $request->name,
                     'email' => $request->email,
-                    'avatar'=>$photo?asset('storage')."/".$photo:null,
+                    //'avatar'=>$photo?asset('storage')."/".$photo:null,
+                    'avatar'=>$path,
                     'password' => Hash::make($request->password)
                 ];
             }
@@ -52,7 +60,8 @@ class UserController extends Controller
                 $data = [
                     'name' => $request->name,
                     'email' => $request->email,
-                    'avatar'=>$photo?asset('storage')."/".$photo:null,
+                    //'avatar'=>$photo?asset('storage')."/".$photo:null,
+                    'avatar'=>$path,
                 ];
             }
 
@@ -96,7 +105,7 @@ class UserController extends Controller
             $end_date = '2200-01-01 00:00:00';
         }
         else{
-            $end_date = date('Y-m-d H:i:s', strtotime($request->end));
+            $end_date = date('Y-m-d', strtotime($request->end)) . ' 23:59:59';
         }
         $symptom_type = $request->symptom_type;
         $memo = $request->memo;
@@ -139,14 +148,15 @@ class UserController extends Controller
             $start_date = '1950-01-01 00:00:00';
         }
         if(isset($request->end)){
-            $end_date = date('Y-m-d H:i:s', strtotime($request->end));
+            $end_date = date('Y-m-d', strtotime($request->end)) . ' 23:59:59';
         }
         else{
             $end_date = '2250-01-01 00:00:00';
         }
 
         $symptom_type = $request->symptom_type;
-        $part_type = $request->part_type;
+        if(isset($request->part_type))
+            $part_type = (int)$request->part_type;
         $pos_id = $request->pos_id;
         if(isset($symptom_type)){
             if(isset($part_type)){
@@ -185,7 +195,7 @@ class UserController extends Controller
         else{
             if(isset($part_type)){
                 if($part_type === 1){
-                    $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                    $data = Image::with('record')->whereHas('record',function ($query) use ($user_id){
                         $query->where('user_id', $user_id);})
                         ->where('part_type', 1)
                         ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
@@ -193,14 +203,14 @@ class UserController extends Controller
                 }
                 else{
                     if(isset($pos_id)){
-                        $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                        $data = Image::with('record')->whereHas('record',function ($query) use ($user_id){
                             $query->where('user_id', $user_id);})
                             ->where('part_type', $part_type)->where('pos_id', $pos_id)
                             ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
                             ->get()->toArray();
                     }
                     else{
-                        $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                        $data = Image::with('record')->whereHas('record',function ($query) use ($user_id){
                             $query->where('user_id', $user_id);})
                             ->where('part_type', $part_type)
                             ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
@@ -210,7 +220,7 @@ class UserController extends Controller
                 }
             }
             else{
-                $data = Image::with('record')->whereHas('record',function ($query) use ($symptom_type, $user_id){
+                $data = Image::with('record')->whereHas('record',function ($query) use ($user_id){
                     $query->where('user_id', $user_id);})
                     ->where('created_at', '>=', $start_date)->where('created_at', '<=', $end_date)
                     ->get()->toArray();

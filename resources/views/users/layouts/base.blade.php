@@ -106,7 +106,7 @@
     jQuery.extend(jQuery.validator.messages, {
         required: "이 필드는 필수입력필드입니다.",
         remote: "이 필드를 고쳐주십시오.",
-        email: "정확한 이메일을 입력해주십시오.",
+        email: "이메일 형식이 올바르지 않습니다.",
         url: "정확한 URL을 입력해주십시오.",
         date: "정확한 날짜를 입력해주십시오.",
         dateISO: "정확한 날짜(ISO)를 입력해주십시오.",

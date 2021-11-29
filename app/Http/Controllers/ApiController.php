@@ -65,6 +65,15 @@ class ApiController extends Controller
         }
     }
 
+    public function log(Request $request){
+        $input = $request->all();
+        Log::info('API Log: ' . $input['log']);
+        $responseData = new ApiResponseData($request);
+        $responseData->message = "log";
+        $responseData->status = self::SUCCESS;
+        return response()->json($responseData);
+    }
+
     public function logout (Request $request)
     {
         $token = $request->user()->token();
@@ -118,7 +127,7 @@ class ApiController extends Controller
             'symptom_type' => $symptomType
         ];
         $record_id = Record::create($data)->id;
-        if(isset($title) || isset($content)){
+        if((isset($title) && $title !== null) || (isset($content) && $content !== null)){
             Comment::create([
                 'title' => $title,
                 'content' => $content,
@@ -130,12 +139,19 @@ class ApiController extends Controller
             for($j = 1; $j < 9; $j++){
                 if($request->hasFile('attach_'.$i.'_'.$j)) {
                     $key = 'attach_'.$i.'_'.$j;
-                    $photo = $request[$key]->store('image','public');
+                    //$photo = $request[$key]->store('image','public');
+                    $file = $request[$key];
+                    $extension = $file->getClientOriginalExtension(); // you can also use file name
+                    $photo = uniqid('file_', true).'.'.$extension;
+                    $path = public_path().'/image';
+                    $uplaod = $file->move($path,$photo);
+                    $path = '/public/image/' . $photo;
                     $data = [
                         'record_id' => $record_id,
                         'part_type' => $i,
                         'pos_id' => $j,
-                        'img_url'=>$photo?asset('storage')."/".$photo:null,
+                        //'img_url'=>$photo?asset('storage')."/".$photo:null,
+                        'img_url'=>$path,
                     ];
                     Image::create($data);
                 }

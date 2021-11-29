@@ -8,7 +8,7 @@
             <div class="section-content">
                 <div class="row">
                     <div class="col-md-12 text-center">
-                        <img id="img_avatar" src="{{ (isset($user->avatar) ? $user->avatar : asset('images/blog/author.jpg'))}}" class="avatar brround avatar-xl"/>
+                        <img id="img_avatar_1" src="{{ (isset($user->avatar) ? $user->avatar : asset('images/blog/author.jpg'))}}" class="avatar brround avatar-xl"/>
 
                     </div>
                     <div class="col-md-12 text-center">
@@ -116,14 +116,14 @@
             if (FileReader && files && files.length) {
                 var fr = new FileReader();
                 fr.onload = function () {
-                    document.getElementById('img_avatar').src = fr.result;
+                    document.getElementById('img_avatar_1').src = fr.result;
                 }
                 fr.readAsDataURL(files[0]);
             }
         })
         $('#password, #confirm_password').on('keyup', function () {
             if ($('#password').val() == $('#confirm_password').val()) {
-                $('#message').html('암호가 일치합니다.').css('color', 'green');
+                $('#message').html('');
             } else
                 $('#message').html('암호가 일치하지 않습니다.').css('color', 'red');
         });
@@ -164,6 +164,7 @@
                         if(response.status === true){
                             console.log(response);
                             toastr.success("변경성공");
+                            window.location.reload()
                         }else{
                             toastr.error("실패")
                         }
